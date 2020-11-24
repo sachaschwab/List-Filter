@@ -8,8 +8,30 @@
 import SwiftUI
 
 struct ListView: View {
+    
+    @ObservedObject var messageData = MockData()
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        let messagesToDisplay = todayMessages()
+        
+        List {
+            ForEach(messagesToDisplay) { item in
+                CellView(messageText: item.messageText, dateText: String(describing: item.date))
+            }
+        }
+    }
+    
+    func todayMessages() -> [Message] {
+        let filterData = messageData.items
+        let filtered = filterData.filter {
+            Calendar.current.isDateInToday($0.date)
+        }
+        
+        for item in filtered {
+            print(String(describing: item.date))
+        }
+        
+        return filtered
     }
 }
 
@@ -18,3 +40,4 @@ struct ListView_Previews: PreviewProvider {
         ListView()
     }
 }
+
